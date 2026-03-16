@@ -1,5 +1,8 @@
 # Hadal Experiments
 
+This repo contains scripts and instructions to recreate figures appearing
+in the paper Hadal: Centralized Label DP without a Trusted Party.
+
 ## Setup
 
 This project uses devcontainers for easy setup and to ensure a consistent
@@ -46,12 +49,12 @@ which also disabled masking).
 `check_overflow_INSECURE=True`. Note this requires decrypting intermediate
 results and breaks the security guarantees.
 
-- Choosing parameters in the backprop and noise encryption context functions
-(e.g. log2_cleartext_sz, scaling_factor) requires care. It is useful to debug
-the backprop parameters first by disabling the noise protocol and enabling the
-overflow checks. Then, set a large `noise_offset_log2` and choose an appropriate
-plaintext size and scaling factor. Then, reduce the noise offset. The same
-process can be repeated for the noise encryption context.
+- Manually choosing parameters in the backprop and noise encryption context
+functions (e.g. log2_cleartext_sz, scaling_factor) requires care. It is useful
+to debug the backprop parameters first by disabling the noise protocol and
+enabling the overflow checks. Then, set a large `noise_offset_log2` and choose
+an appropriate plaintext size and scaling factor. Then, reduce the noise
+offset. The same process can be repeated for the noise encryption context.
 
 - Tensorboard profiler has a bug where it writes data to the wrong directory.
 If you want to see profiling information, `cd tflogs/.../train/`, you should
