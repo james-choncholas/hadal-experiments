@@ -1,0 +1,14 @@
+{
+	"name": "Ubuntu",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+	"postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.tensorboard",
+				"ms-python.vscode-pylance"
+			]
+		}
+	}
+}
