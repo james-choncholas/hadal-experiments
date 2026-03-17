@@ -21,15 +21,21 @@ python ./mnist-dpsgd.py --party b
 
 To run the experiments on a single machine on multiple TensorFlow processes:
 ```bash
+export HADAL_FILESYSTEM_PATH='/tmp/'
 python ./mnist-dpsgd.py --party l
 python ./mnist-dpsgd.py --party f # In another terminal
 ```
 
-To run the experiments on multiple machines:
+To run the experiments on multiple machines, set up a shared directory used to transfer large tensors. Then run:
 
 ```bash
+# On the feature-holding machine:
+export HADAL_FILESYSTEM_PATH='/shared/directory/'
 python ./mnist-dpsgd.py --party f --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'
-python ./mnist-dpsgd.py --party l --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'  # On other machine.
+
+# On the label-holding machine:
+export HADAL_FILESYSTEM_PATH='/shared/directory/'
+python ./mnist-dpsgd.py --party l --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'
 ```
 
 Tips:
