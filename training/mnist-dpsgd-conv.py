@@ -8,8 +8,8 @@ import math
 import json
 import hashlib
 import numpy as np
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 import os
 import signal
 import sys
@@ -122,14 +122,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=13,
                     main_moduli=[1152920548708581377, 1152918758512312321, 566803680264193, 568043046912001],
                     plaintext_modulus=8404993,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -140,13 +140,13 @@ class HyperModel(kt.HyperModel):
         def noise_context_fn (read_cache):
             if FLAGS.eager_mode:
                 # TODO: FIX
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=13,
                     main_moduli=[369295477609627649, 45036033854832641],
                     plaintext_modulus=274878136321,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -171,31 +171,31 @@ class HyperModel(kt.HyperModel):
 
         input_shape = (28 - (2 * clip_by), 28 - (2 * clip_by), 1)
         input_img = keras.layers.Input(shape=input_shape)
-        x = tf_shell_ml.Conv2D(
+        x = hadal_ml.Conv2D(
             filters=16,
             kernel_size=4,
             strides=2,
             activation=tf.nn.relu,
-            activation_deriv=tf_shell_ml.relu_deriv,
+            activation_deriv=hadal_ml.relu_deriv,
         )(input_img)
-        x = tf_shell_ml.MaxPool2D(
+        x = hadal_ml.MaxPool2D(
             pool_size=(2, 2),
             strides=1,
         )(x)
-        x = tf_shell_ml.Flatten()(x)
-        x = tf_shell_ml.ShellDense(
+        x = hadal_ml.Flatten()(x)
+        x = hadal_ml.ShellDense(
             32,
             activation=tf.nn.relu,
-            activation_deriv=tf_shell_ml.relu_deriv,  # Note: tf-shell specific
+            activation_deriv=hadal_ml.relu_deriv,  # Note: hadal-flow specific
         )(x)
-        x = tf_shell_ml.ShellDense(
+        x = hadal_ml.ShellDense(
             10,
             activation=tf.nn.softmax,
         )(x)
 
         # Create the model. When using DPSGD, you must use Shell* layers. Note
         # this takes roughly an hour per batch!
-        model = tf_shell_ml.DpSgdModel(
+        model = hadal_ml.DpSgdModel(
             inputs=input_img,
             outputs=x,
             backprop_context_fn=backprop_context_fn,

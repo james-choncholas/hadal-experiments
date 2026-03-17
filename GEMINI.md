@@ -1,5 +1,6 @@
-# TF-Shell Experiments
-This project contains scripts to train models in a privacy preserving way using the tf-shell library.
+# Hadal-Flow Experiments
+
+This project contains scripts to train models in a privacy preserving way using the hadal-flow library.
 
 ## General Instructions
 

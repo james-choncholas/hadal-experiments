@@ -11,8 +11,8 @@ from absl import flags
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import keras
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 from experiment_utils import (
     features_party_job,
     labels_party_job,
@@ -126,14 +126,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[1688880462102529, 2181470596882433],
                     plaintext_modulus=8590090241,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -143,13 +143,13 @@ class HyperModel(kt.HyperModel):
 
         def noise_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[6192450225922049, 16325550595612673],
                     plaintext_modulus=68719484929,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -214,7 +214,7 @@ class HyperModel(kt.HyperModel):
         )(x)
 
         # Create the model.
-        model = tf_shell_ml.PostScaleModel(
+        model = hadal_ml.PostScaleModel(
             inputs=single_input,
             outputs=x,
             ubatch_per_batch=2**3,  # h100

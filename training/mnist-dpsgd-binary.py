@@ -8,8 +8,8 @@ import math
 import json
 import hashlib
 import numpy as np
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 import os
 import signal
 import sys
@@ -123,14 +123,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[36030591770263553, 18014745055510529],
                     plaintext_modulus=8404993,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -140,14 +140,14 @@ class HyperModel(kt.HyperModel):
 
         def noise_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[11016591278081, 20931523428353],
                     plaintext_modulus=67239937,
                     scaling_factor=1,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -172,11 +172,11 @@ class HyperModel(kt.HyperModel):
 
         input_shape = (784,)
         input_img = keras.layers.Input(shape=input_shape)
-        x = tf_shell_ml.ShellDense(100, activation=tf.nn.relu, activation_deriv=tf_shell_ml.relu_deriv)(input_img)
-        x = tf_shell_ml.ShellDense(2, activation=tf.nn.softmax)(x)
+        x = hadal_ml.ShellDense(100, activation=tf.nn.relu, activation_deriv=hadal_ml.relu_deriv)(input_img)
+        x = hadal_ml.ShellDense(2, activation=tf.nn.softmax)(x)
 
         # Create the model. When using DPSGD, you must use Shell* layers.
-        model = tf_shell_ml.DpSgdModel(
+        model = hadal_ml.DpSgdModel(
             inputs=input_img,
             outputs=x,
             backprop_context_fn=backprop_context_fn,

@@ -13,8 +13,8 @@ import keras
 from keras.layers import Dense, Conv2D, MaxPool2D , Flatten
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 import os
 import json
 import hashlib
@@ -579,14 +579,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[1688880462102529, 2181470596882433],
                     plaintext_modulus=8590090241,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -596,13 +596,13 @@ class HyperModel(kt.HyperModel):
 
         def noise_context_fn (read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[6192450225922049, 16325550595612673],
                     plaintext_modulus=68719484929,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -645,7 +645,7 @@ class HyperModel(kt.HyperModel):
         model_arch = getModelClass(model_arch_str)
         inputs, outputs = model_arch(2, weight_decay, inputs=input_shape, residual=residual)
 
-        model = tf_shell_ml.PostScaleModel(
+        model = hadal_ml.PostScaleModel(
             inputs=inputs,
             outputs=outputs,
             ubatch_per_batch=2**5,  # 8x24GB GPUs

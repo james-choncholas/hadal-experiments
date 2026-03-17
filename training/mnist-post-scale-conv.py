@@ -6,8 +6,8 @@ from absl import flags
 import math
 import keras
 import numpy as np
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 import os
 import json
 import hashlib
@@ -123,14 +123,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[1688880462102529, 2181470596882433],
                     plaintext_modulus=8590090241,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -140,13 +140,13 @@ class HyperModel(kt.HyperModel):
 
         def noise_context_fn (read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[6192450225922049, 16325550595612673],
                     plaintext_modulus=68719484929,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -193,7 +193,7 @@ class HyperModel(kt.HyperModel):
             activation=tf.nn.softmax,
         )(x)
 
-        model = tf_shell_ml.PostScaleModel(
+        model = hadal_ml.PostScaleModel(
             inputs=input_img,
             outputs=x,
             backprop_context_fn=backprop_context_fn,

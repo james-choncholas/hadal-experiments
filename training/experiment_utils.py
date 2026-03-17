@@ -9,7 +9,7 @@ from noise_multiplier_finder import compute_epsilon
 from netio_mon import setup_traffic_monitoring, get_byte_count
 import numpy as np
 
-job_prefix = "tfshell"
+job_prefix = "hadalflow"
 features_party_job = f"{job_prefix}features"
 labels_party_job = f"{job_prefix}labels"
 

@@ -12,8 +12,8 @@ from absl import flags
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import keras
-import tf_shell
-import tf_shell_ml
+import hadal_flow
+import hadal_ml
 import nltk
 from experiment_utils import (
     features_party_job,
@@ -128,14 +128,14 @@ class HyperModel(kt.HyperModel):
 
         def backprop_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[36028865943724033, 18014826867515393],
                     plaintext_modulus=2236417,
                     scaling_factor=FLAGS.backprop_scaling_factor,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=backprop_cleartext_sz,
                     scaling_factor=backprop_scaling_factor,
                     noise_offset_log2=backprop_noise_offset,
@@ -145,13 +145,13 @@ class HyperModel(kt.HyperModel):
 
         def noise_context_fn(read_cache):
             if FLAGS.eager_mode:
-                return tf_shell.create_context64(
+                return hadal_flow.create_context64(
                     log_n=12,
                     main_moduli=[6192450225922049, 16325550595612673],
                     plaintext_modulus=68719484929,
                 )
             else:
-                return tf_shell.create_autocontext64(
+                return hadal_flow.create_autocontext64(
                     log2_cleartext_sz=noise_cleartext_sz,
                     noise_offset_log2=noise_noise_offset,
                     read_from_cache=read_cache,
@@ -178,20 +178,20 @@ class HyperModel(kt.HyperModel):
         embedding_dim = hp.Choice("embedding_dim", values=[16, 32], default=16)
         input_shape = (sentence_length,)
         input_layer = tf.keras.layers.Input(shape=input_shape)
-        x = tf_shell_ml.ShellEmbedding(
+        x = hadal_ml.ShellEmbedding(
             self.vocab_size + 1,  # +1 for OOV token.
             embedding_dim,
             skip_embeddings_below_index=50,  # Skip the most common words.
         )(input_layer)
-        # x = tf_shell_ml.ShellDropout(0.5)(x)
-        x = tf_shell_ml.GlobalAveragePooling1D()(x)
-        x = tf_shell_ml.ShellDropout(0.5)(x)
-        x = tf_shell_ml.ShellDense(
+        # x = hadal_ml.ShellDropout(0.5)(x)
+        x = hadal_ml.GlobalAveragePooling1D()(x)
+        x = hadal_ml.ShellDropout(0.5)(x)
+        x = hadal_ml.ShellDense(
             2,
             activation=tf.nn.softmax,
         )(x)
 
-        model = tf_shell_ml.DpSgdModel(
+        model = hadal_ml.DpSgdModel(
             inputs=input_layer,
             outputs=x,
             backprop_context_fn=backprop_context_fn,

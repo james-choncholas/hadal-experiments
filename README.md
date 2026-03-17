@@ -28,8 +28,8 @@ python ./mnist-dpsgd.py --party f # In another terminal
 To run the experiments on multiple machines:
 
 ```bash
-python ./mnist-dpsgd.py --party f --cluster_spec '{ "tfshellfeatures": ["localhost:2222"], "tfshelllabels": ["localhost:2223"], }'
-python ./mnist-dpsgd.py --party l --cluster_spec '{ "tfshellfeatures": ["localhost:2222"], "tfshelllabels": ["localhost:2223"], }'  # On other machine.
+python ./mnist-dpsgd.py --party f --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'
+python ./mnist-dpsgd.py --party l --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'  # On other machine.
 ```
 
 Tips:
