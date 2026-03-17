@@ -268,7 +268,7 @@ def main(_):
         # Override the features and labels party devices.
         labels_party_dev = "/job:localhost/replica:0/task:0/device:CPU:0"
         features_party_dev = "/job:localhost/replica:0/task:0/device:CPU:0"
-        jacobian_dev = None
+        jacobian_dev = [features_party_dev]
         if FLAGS.gpu:
             num_gpus = len(tf.config.list_physical_devices("GPU"))
             jacobian_dev = [
@@ -280,7 +280,7 @@ def main(_):
         # Set up the distributed training environment.
         features_party_dev = f"/job:{features_party_job}/replica:0/task:0/device:CPU:0"
         labels_party_dev = f"/job:{labels_party_job}/replica:0/task:0/device:CPU:0"
-        jacobian_dev = None
+        jacobian_dev = [features_party_dev]
         if FLAGS.gpu:
             num_gpus = len(tf.config.list_physical_devices("GPU"))
             jacobian_dev = [
