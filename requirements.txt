@@ -1,5 +1,5 @@
 hadal-flow==0.6.2
-dp-accounting==0.4.4
+dp-accounting==0.6.0
 nltk==3.9.1
 tensorboard-plugin-profile
 tensorflow-text

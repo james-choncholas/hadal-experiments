@@ -26,15 +26,18 @@ python ./mnist-dpsgd.py --party l
 python ./mnist-dpsgd.py --party f # In another terminal
 ```
 
-To run the experiments on multiple machines, set up a shared directory used to transfer large tensors. Then run:
-
+To run the experiments on multiple machines, set up a shared directory used to transfer large tensors. This example uses sshfs:
 ```bash
 # On the feature-holding machine:
-export HADAL_FILESYSTEM_PATH='/shared/directory/'
+export HADAL_FILESYSTEM_PATH='/tmp/hadal'
+mkdir $HADAL_FILESYSTEM_PATH
 python ./mnist-dpsgd.py --party f --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'
 
 # On the label-holding machine:
-export HADAL_FILESYSTEM_PATH='/shared/directory/'
+sudo apt install sshfs fuse
+export HADAL_FILESYSTEM_PATH='/tmp/hadal'
+mkdir $HADAL_FILESYSTEM_PATH
+sshfs user@remote_host:$HADAL_FILESYSTEM_PATH $HADAL_FILESYSTEM_PATH
 python ./mnist-dpsgd.py --party l --cluster_spec '{ "hadalflowfeatures": ["localhost:2222"], "hadalflowlabels": ["localhost:2223"], }'
 ```
 

@@ -1,8 +1,8 @@
 export DEBIAN_FRONTEND="noninteractive"
 
-apt update
-apt upgrade -y
-apt install -y sudo git git-lfs unzip python3 python3-pip python3-venv
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y sudo git git-lfs unzip python3 python3-pip python3-venv
 
 
 python3 -m venv .venv
