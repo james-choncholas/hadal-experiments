@@ -3,6 +3,10 @@
 This repo contains scripts and instructions to recreate figures appearing
 in the paper Hadal: Centralized Label DP without a Trusted Party.
 
+Directories:
+- `/training` - training scripts.
+- `/repro` - instructions to reproduce results from the paper.
+
 ## Setup
 
 This project uses devcontainers for easy setup and to ensure a consistent
