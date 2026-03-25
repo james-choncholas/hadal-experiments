@@ -118,45 +118,85 @@ for C in standard_thresholds:
 
 
 # --- 5. Plot the Results ---
-sns.set_theme(style="whitegrid")
-plt.figure(figsize=(6, 4), dpi=400)
+# sns.set_theme(style="whitegrid")
+# --- IEEE Publication Standard Settings ---
+plt.rcParams.update({
+    # Fonts
+    'font.family': 'serif',
+    #'font.serif': ['Computer Modern'], # Or 'Computer Modern' if you want it to match LaTeX exactly
+    'font.size': 8,          # General font size
+    'axes.labelsize': 9,     # Axis label font size
+    'axes.titlesize': 9,     # Title font size
+    'xtick.labelsize': 8,    # X-axis tick label size
+    'ytick.labelsize': 8,    # Y-axis tick label size
+    'legend.fontsize': 8,    # Legend font size
+    
+    # Lines and markers
+    'axes.linewidth': 0.8,   # Box line width
+    'lines.linewidth': 1.2,  # Plot line width
+    'lines.markersize': 4,   # Marker size
+    
+    # Grid
+    'grid.linewidth': 0.5,
+    'grid.alpha': 0.5,
+})
+plt.figure(figsize=(3.5, 2.3), dpi=500)
 
 # Plot the curve for the standard clipping method
 plt.plot(standard_bias, standard_variance, marker='', linestyle='--', label='Clip by Norm (DP-SGD)', markersize=4, color='black')
 
 # Plot the novel clipping method
-plt.plot(novel_bias, novel_variance, marker='', linestyle='--', label='Clip by Maximum Per-class Norm\n(Intermediate Method)', markersize=4, color='gray')
+plt.plot(novel_bias, novel_variance, marker='', linestyle='--', label='Clip by Max Per-class Norm\n(Intermediate Method)', markersize=4, color='gray')
 
 # Plot the novel clipping method
-plt.plot(novel_star_bias, novel_star_variance, marker='', linestyle='--', label='Clip by Maximum Per-class Norm\nwith Dynamic Noise Calibration (This Work)', markersize=4, color='lightgray')
+plt.plot(novel_star_bias, novel_star_variance, marker='', linestyle='-.', label='Clip by Max Per-class Norm\nwith Noise Calibration\n(This Work)', markersize=4, color='#a9a9a9')
+
+# add a blank plot for empty legend entry
+plt.plot([], [], marker='', linestyle='--', label='Better', markersize=0, color='white')
 
 # Add annotations and labels
-plt.title('Clipping Bias-Variance Trade-off', fontsize=16)
-plt.xlabel('Bias', fontsize=12)
-plt.ylabel('Variance (Proxy: Sensitivity²)', fontsize=12)
+plt.title('Bias-Variance Trade-off of Clipping\nNormally Distributed Gradients (Simulated)')
+plt.xlabel('Bias')
+plt.ylabel('Variance (Sensitivity²)')
 #plt.style.use('grayscale')
 #plt.legend(fontsize=11)
+
+# Draw an arrow towards the origin titled "Better"
+# on top of the legend.
+plt.annotate('', xy=(4.25, 6), xytext=(5.25, 10),
+             arrowprops=dict(facecolor='black', shrink=0.05, width=.5, headwidth=5, headlength=5),
+             fontsize=8, zorder=10)
+
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
 
-# Annotate the direction of the trade-off for the standard method
-left_x, left_y = 1.0, 18
-plt.annotate('Higher Clipping Threshold\n(Less Bias, More Noise)',
-             xy=(left_x, left_y),
-             xytext=(left_x, left_y),
-             #xytext=(standard_bias[-5] + 0.1, standard_variance[-5] - 1.5),
-             #xy=(standard_bias[-5], standard_variance[-5]),
-             #arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=8),
-             bbox=dict(facecolor='white', edgecolor='white', boxstyle='round,pad=0.1'),
-             fontsize=10)
-right_x, right_y = 4, 3
-plt.annotate('Lower Clipping Threshold\n(More Bias, Less Noise)',
-             xy=(right_x, right_y),
-             xytext=(right_x, right_y),
-             #arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=8),
-             bbox=dict(facecolor='white', edgecolor='white', boxstyle='round,pad=0.1'),
-             fontsize=10)
+# # Annotate areas of the graph
+# left_x, left_y = 1.0, 18
+# plt.annotate('Higher Clipping Threshold\n(Less Bias, More Noise)',
+#              xy=(left_x, left_y),
+#              xytext=(left_x, left_y),
+#              #xytext=(standard_bias[-5] + 0.1, standard_variance[-5] - 1.5),
+#              #xy=(standard_bias[-5], standard_variance[-5]),
+#              #arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=8),
+#              bbox=dict(facecolor='white', edgecolor='white', boxstyle='round,pad=0.1'))
+# right_x, right_y = 4, 3
+# plt.annotate('Lower Clipping Threshold\n(More Bias, Less Noise)',
+#              xy=(right_x, right_y),
+#              xytext=(right_x, right_y),
+#              #arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=8),
+#              bbox=dict(facecolor='white', edgecolor='white', boxstyle='round,pad=0.1'))
+
+
+
+# Draw an arrow towards the origin titled "Better"
+# plt.annotate('Better', xy=(12, 8), xytext=(12, 8))
+# plt.annotate('', xy=(10, 3), xytext=(12, 13),
+#              arrowprops=dict(facecolor='black', shrink=0.05, width=.5, headwidth=6, headlength=6),
+#              fontsize=8)
+
+
+
 
 ## Annotate the direction of the trade-off for the novel method
 #plt.annotate('Lower C\n(More Bias, Less Noise)', xy=(novel_bias[-5], novel_variance[-5]),
@@ -180,7 +220,7 @@ plt.annotate('Lower Clipping Threshold\n(More Bias, Less Noise)',
 
 
 plt.show()
-plt.savefig('bv_tradeoff.png')
+plt.savefig('bv_tradeoff.png', dpi=500)
 
 # Optional: Plot the distribution of gradient norms to understand the effect of clipping
 plt.figure(figsize=(10, 5))
@@ -192,5 +232,5 @@ plt.xlabel('L2 Norm')
 plt.ylabel('Frequency')
 plt.legend()
 plt.show()
-plt.savefig('grad_norms.png')
+plt.savefig('grad_norms.png', dpi=500)
 
